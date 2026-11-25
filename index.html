@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pixel Art Tree Wind Lab</title>
+  <meta name="description" content="Pixel-art trees that move in the wind: clump splitting, one-pixel loops, a traveling wave, gusts and a damped spring — running live in your browser." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect x='3' y='5' width='2' height='3' fill='%236b4529'/%3E%3Crect x='1' y='1' width='6' height='4' fill='%233c8334'/%3E%3Crect x='2' y='0' width='4' height='1' fill='%2359a13c'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>Pixel Art Tree Wind Lab</h1>
+      <p data-i18n="tagline"></p>
+    </div>
+    <div class="lang">
+      <button data-lang="ja" class="on">日本語</button>
+      <button data-lang="en">English</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="stage-wrap">
+      <div class="stage-frame"><canvas id="stage" width="320" height="180"></canvas></div>
+      <div class="timeline">
+        <button id="play" class="primary">⏸</button>
+        <div class="tl-bar" id="tlbar"><div class="tl-fill" id="tlfill"></div><div class="tl-gusts" id="tlgusts"></div></div>
+        <span class="mono" id="clock">0.0s / 20s</span>
+        <button id="jump" data-i18n="jump"></button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="group">
+        <h3 data-i18n="g_view"></h3>
+        <label><input type="radio" name="view" value="normal" checked /> <span data-i18n="v_normal"></span></label>
+        <label><input type="radio" name="view" value="clumps" /> <span data-i18n="v_clumps"></span></label>
+        <label><input type="radio" name="view" value="weight" /> <span data-i18n="v_weight"></span></label>
+        <label><input type="checkbox" id="overlayGust" /> <span data-i18n="o_gust"></span></label>
+        <label><input type="checkbox" id="overlayWave" /> <span data-i18n="o_wave"></span></label>
+      </div>
+      <div class="group">
+        <h3 data-i18n="g_method"></h3>
+        <label><input type="radio" name="mode" value="article" checked /> <span data-i18n="m_article"></span></label>
+        <label><input type="radio" name="mode" value="sine" /> <span data-i18n="m_sine"></span></label>
+        <label><input type="radio" name="mode" value="noise" /> <span data-i18n="m_noise"></span></label>
+      </div>
+      <div class="group">
+        <h3 data-i18n="g_parts"></h3>
+        <label><input type="checkbox" id="waveOn" checked /> <span data-i18n="p_wave"></span></label>
+        <label><input type="checkbox" id="gustsOn" checked /> <span data-i18n="p_gust"></span></label>
+        <label><input type="checkbox" id="spring" checked /> <span data-i18n="p_spring"></span></label>
+        <label><input type="checkbox" id="inside" checked /> <span data-i18n="p_inside"></span></label>
+        <label><input type="checkbox" id="stepped" checked /> <span data-i18n="p_step"></span></label>
+        <label><input type="checkbox" id="shadows" checked /> <span data-i18n="p_shadow"></span></label>
+        <label><input type="checkbox" id="leaves" checked /> <span data-i18n="p_leaves"></span></label>
+      </div>
+      <div class="group">
+        <h3 data-i18n="g_world"></h3>
+        <label class="row"><span data-i18n="w_speed"></span>
+          <select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+        </label>
+        <label class="row"><span data-i18n="w_strength"></span> <input type="range" id="strength" min="0" max="2" step="0.05" value="1" /> <span class="mono" id="strengthV">1.00</span></label>
+        <label class="row"><span data-i18n="w_seed"></span> <input type="number" id="seed" value="1" min="1" max="99999" /> <button id="reroll" data-i18n="reroll"></button></label>
+        <p class="hint" data-i18n="hint_click"></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2 data-i18n="h_spring"></h2>
+        <select id="treeSel"></select>
+      </div>
+      <canvas id="graph" width="960" height="200"></canvas>
+      <p class="legend"><span class="sw tgt"></span><span data-i18n="lg_target"></span> <span class="sw lean"></span><span data-i18n="lg_lean"></span> <span class="mono" id="leanV"></span></p>
+      <p class="explain" data-i18n="x_spring"></p>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2 data-i18n="h_pipeline"></h2>
+        <div>
+          <select id="pipeKind"><option value="oak">Oak</option><option value="pine">Pine</option><option value="bush">Bush</option></select>
+          <span class="mono" id="pipeStats"></span>
+        </div>
+      </div>
+      <div class="pipeline" id="pipeline"></div>
+    </section>
+
+    <section class="card how">
+      <h2 data-i18n="h_how"></h2>
+      <ol>
+        <li data-i18n="how1"></li>
+        <li data-i18n="how2"></li>
+        <li data-i18n="how3"></li>
+        <li data-i18n="how4"></li>
+        <li data-i18n="how5"></li>
+        <li data-i18n="how6"></li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p data-i18n="credit"></p>
+    <p><a href="https://github.com/kumi0708/pixel-art-tree-wind-lab">GitHub</a> · <a href="https://www.spritecook.ai/blog/pixel-art-trees-wind-animation">SpriteCook — How to make pixel art trees move in the wind</a></p>
+  </footer>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "pixel-art-tree-wind-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pixel-art trees that move in the wind — clump splitting, one-pixel loops, traveling wave, gusts and a damped spring. Zero dependencies.",
+  "scripts": {
+    "serve": "node tools/serve.mjs 8791",
+    "capture": "node tools/capture.mjs"
+  },
+  "license": "MIT"
+}
